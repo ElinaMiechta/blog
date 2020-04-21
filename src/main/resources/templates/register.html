@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th=”http://www.thymeleaf.org” xmlns="http://www.w3.org/1999/html">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <link href="/css/register.css" th:href="@{/css/register.css}" rel="stylesheet">
+
+
+    <title>Registration</title>
+</head>
+<body>
+
+
+<div id="login-box">
+    <form th:action="@{/register}" th:method="post" th:object="${user}">
+    <div class="left">
+        <h1>Sign up</h1>
+
+<!--        <form action="#" th:action="@{'/register/'+${token}}" th:method="put" >-->
+
+
+        <input th:field ="*{username}" type="text" name="username" placeholder="Username" />
+        <span th:if="${#fields.hasErrors('username')}" th:errors="*{username}" class="text-danger">error-message</span>
+
+        <input th:field="*{email}" type="text" name="email" placeholder="E-mail" />
+        <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="text-danger">error-message</span>
+
+        <input th:field="*{password}" type="password" name="password" placeholder="Password" />
+        <span th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="text-danger">error-message</span>
+
+
+        <input type="submit" name="signup_submit" value="Sign me up" />
+    </div>
+
+    <div class="right">
+</div>
+    </form>
+</div>
+
+
+</body>
+</html>

@@ -1,0 +1,24 @@
+<html xmlns:th=”http://www.thymeleaf.org” xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII"/>
+    <title th:utext="#{label.pages.home.title}">home</title>
+</head>
+<body>
+<div >
+
+    <h1 class="alert alert-info" style="text-align: center">Activation success</h1>
+    <br/>
+    <th:block th:if="${user.token != null}">
+        <h2 style="text-align: center; color: #16a085" th:text="${user.username}"></h2>
+        <h3 style="font-weight: bold; text-align: center"> Your Account Activated!</h3>
+    </th:block>
+
+    <th:block th:if="${user.token==null}">
+        <h3>No user found :(</h3>
+    </th:block>
+    <br/>
+    <a class="btn btn-primary" style="position: center" th:href="@{/login}" >Login</a>
+</div>
+</body>
+</html>

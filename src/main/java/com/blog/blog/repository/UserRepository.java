@@ -11,11 +11,14 @@ import java.util.List;
 @Repository
 public interface UserRepository extends JpaRepository<User,Long> {
 
-    User getUserById(long id);
 
     List<User> findAll();
     User findByEmail(String email);
-
+    User findUserByToken(String token);
     User findUserByEmailAndPassword(String email, String password);
+
+    @Modifying
+    @Query("update User u  set u.active=true where u.token=:token")
+    void activateUser(@Param("token") String token);
 
 }

@@ -19,21 +19,45 @@
     <div class="left">
         <h1>Sign up</h1>
 
-<!--        <form action="#" th:action="@{'/register/'+${token}}" th:method="put" >-->
-
-
         <input th:field ="*{username}" type="text" name="username" placeholder="Username" />
-        <span th:if="${#fields.hasErrors('username')}" th:errors="*{username}" class="text-danger">error-message</span>
 
         <input th:field="*{email}" type="text" name="email" placeholder="E-mail" />
-        <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="text-danger">error-message</span>
+
 
         <input th:field="*{password}" type="password" name="password" placeholder="Password" />
         <span th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="text-danger">error-message</span>
 
+        <input type="submit" onclick="pop()" name="signup_submit" id="button" value="Sign me up" />
 
-        <input type="submit" name="signup_submit" value="Sign me up" />
     </div>
+
+<!--        Alert-->
+        <div>
+            <div id="box">
+                <span><ion-icon name="checkmark-outline"></ion-icon></span>
+
+
+                <h6 > Activation email has been sent</h6>
+                <a  onclick="pop()" class="close">Back</a>
+            </div>
+
+            <script type="text/javascript">
+                var x =0;
+                function pop(){
+                    if (x==0){
+                        document.getElementById("box").style.display ="block";
+                        x=1;
+                    }else {
+                        document.getElementById("box").style.display ="none";
+                        x=0;
+                    }
+                }
+            </script>
+
+        </div>
+
+
+
 
     <div class="right">
 </div>

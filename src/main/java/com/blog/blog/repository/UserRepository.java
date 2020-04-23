@@ -31,10 +31,9 @@ public interface UserRepository extends JpaRepository<User,Long> {
     @Query("update User u set u.active=false where u.loginDate<:date")
     void deactivateUser(@Param("date")LocalDate date);
 
-
     @Modifying
-    @Query("update User u set u.active=false where u.email<:email")
-    void deactivateUser2(@Param("email")String email);
+    @Query(" update User u set u.token =:token where u.email=:email")
+    void saveNewToken(@Param("token") String token, @Param("email") String email);
 
 
 }

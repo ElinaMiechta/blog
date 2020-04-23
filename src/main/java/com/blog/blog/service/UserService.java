@@ -18,7 +18,7 @@ import java.util.List;
 
 
 @Service
-public class UserService  {
+public class UserService {
 
     private final UserRepository userRepository;
     @Autowired
@@ -26,9 +26,6 @@ public class UserService  {
 
     @Autowired
     private JavaMailSender mailSender;
-
-
-
 
 
     @Autowired
@@ -51,7 +48,6 @@ public class UserService  {
 
 
     }
-
 
 
     private void confirmRegistrationByEmail(@Valid User user) {
@@ -90,40 +86,32 @@ public class UserService  {
         return userRepository.findAll();
     }
 
-    public User findUserByToken(String token){
+    public User findUserByToken(String token) {
         return userRepository.findUserByToken(token);
     }
 
     @Transactional
-    public void activateNewUser(String token){
+    public void activateNewUser(String token) {
         userRepository.activateUser(token);
     }
 
     @Transactional
-    public void updateLoginDate(String email){userRepository.updateLoginDate(email);}
+    public void updateLoginDate(String email) {
+        userRepository.updateLoginDate(email);
+    }
 
     @Transactional
-    public void deactivateUser(LocalDate date ){
+    public void deactivateUser(LocalDate date) {
         userRepository.deactivateUser(date);
     }
 
-
-
-
-    /* ================ */
     @Transactional
-    public void deactivateUserEvenAfterLogin(String email){
-        userRepository.deactivateUser2(email);
-    }
+    public void activateReturnedUser(String token, String email) {
+        userRepository.saveNewToken(token,email);
+        User user = findUserByToken(token);
+        confirmRegistrationByEmail(user);
 
 
-    public boolean isUserOk(User user){
-        LocalDate date = LocalDate.now().minusDays(30);
-        if (user.getLoginDate().equals(date)){
-            return false;
-
-        }
-        return true;
     }
 
 

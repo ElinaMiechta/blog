@@ -5,24 +5,25 @@ import com.blog.blog.model.dto.LoginDto;
 import com.blog.blog.model.dto.UserDto;
 import com.blog.blog.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import javax.mail.MessagingException;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 
 import javax.validation.Valid;
-import java.io.FileNotFoundException;
+
 
 
 @Controller
 public class UserController {
     @Autowired
     private final UserService userService;
+    @Autowired
+    ApplicationEventPublisher eventPublisher;
 
 
     public UserController(UserService userService) {
@@ -30,16 +31,34 @@ public class UserController {
     }
 
 
-    @PostMapping("/register")
-    public String registerNewUser(@ModelAttribute("user") @Valid UserDto userDto,
-                                  BindingResult bindingResult) throws MessagingException, FileNotFoundException {
-        if (bindingResult.hasErrors()) {
-            return "register";
-        }
-        userService.saveUserToDB(userDto);
-        return "welcome";
-
+    @GetMapping(value = "/{token}")
+    public String activateUserByToken(Model model, @PathVariable String token) {
+        User user = userService.findUserByToken(token);
+        userService.activateNewUser(token);
+        model.addAttribute("user", user);
+        return "regitrationConfirm";
     }
+
+    @GetMapping("/regitrationConfirm")
+    public String registrationSuccess() {
+        return "regitrationConfirm";
+    }
+
+
+    @PostMapping("/register")
+    public ModelAndView registerUserAccount(
+            @ModelAttribute("user") @Valid UserDto userDto, BindingResult bindingResult) {
+
+        if (bindingResult.hasErrors()) {
+            return new ModelAndView("register", "user", userDto);
+
+        }
+
+        userService.saveUserToDB(userDto);
+
+        return new ModelAndView("welcome", "user", userDto);
+    }
+
 
     @GetMapping("/register")
     public String register(Model model) {
@@ -50,17 +69,16 @@ public class UserController {
     }
 
     @GetMapping
-    public String mainPage(@Valid User user, Model model, HttpServletRequest request) {
+    public String mainPage(@Valid User user, Model model) {
         model.addAttribute("user", user);
 
         return "welcome";
     }
 
 
-
-
     @GetMapping("/login")
     public String loginUser(@ModelAttribute("user") @Valid User user) {
+
 
         return "login";
     }
@@ -73,17 +91,23 @@ public class UserController {
             return "login";
         }
 
-        User userByEmailAndPassword = userService.findUserByEmailAndPassword(loginDto.getEmail(), loginDto.getPassword());
-        if (userByEmailAndPassword.getRole().equals("ROLE_ADMIN")){
+        userService.findUserByEmailAndPassword(loginDto.getEmail(), loginDto.getPassword());
+        userService.updateLoginDate(loginDto.getEmail());
+        User user = userService.findByEmail(loginDto.getEmail());
+
+
+        userService.deactivateUser(user.getLoginDate());
+
+
+        model.addAttribute("loggedUser", user);
+
+        if (loginDto.getEmail().equals("blogadmin@gmail.com")) {
 
             return "admin";
-        }
+        } else
 
-        return "welcome";
+            return "welcome";
     }
-
-
-
 
 
 }

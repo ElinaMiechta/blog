@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.Valid;
+import java.time.LocalDate;
 import java.util.List;
 
 
@@ -97,5 +98,34 @@ public class UserService  {
     public void activateNewUser(String token){
         userRepository.activateUser(token);
     }
+
+    @Transactional
+    public void updateLoginDate(String email){userRepository.updateLoginDate(email);}
+
+    @Transactional
+    public void deactivateUser(LocalDate date ){
+        userRepository.deactivateUser(date);
+    }
+
+
+
+
+    /* ================ */
+    @Transactional
+    public void deactivateUserEvenAfterLogin(String email){
+        userRepository.deactivateUser2(email);
+    }
+
+
+    public boolean isUserOk(User user){
+        LocalDate date = LocalDate.now().minusDays(30);
+        if (user.getLoginDate().equals(date)){
+            return false;
+
+        }
+        return true;
+    }
+
+
 
 }

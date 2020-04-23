@@ -1,11 +1,15 @@
 package com.blog.blog.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import lombok.Data;
+import org.hibernate.annotations.UpdateTimestamp;
 
+import javax.persistence.*;
+import java.time.LocalDate;
+import java.util.Date;
+
+@Data
 @Entity
+@Table(name = "users")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,16 +20,20 @@ public class User {
     private String role;
     private String token;
     private boolean active;
+    @Column
+    @UpdateTimestamp
+    private LocalDate loginDate;
 
     public User() {
     }
-    public User(String username,String password,String email,String role,String token,boolean active) {
+    public User(String username,String password,String email,String role,String token) {
         this.username=username;
         this.password=password;
         this.email=email;
         this.role=role;
         this.token=token;
-        this.active=active;
+        this.active=false;
+        loginDate= LocalDate.now();
     }
 
     public Long getId() {
@@ -82,5 +90,30 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public LocalDate getLoginDate() {
+        return loginDate;
+    }
+
+    public void setLoginDate(LocalDate loginDate) {
+        this.loginDate = loginDate;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", name='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", email='" + email + '\'' +
+                ", role='" + role + '\'' +
+                ", token='" + token + '\'' +
+                ", active=" + active +
+                '}';
     }
 }

@@ -4,6 +4,7 @@ import com.blog.blog.model.User;
 import com.blog.blog.model.dto.LoginDto;
 import com.blog.blog.model.dto.UserDto;
 import com.blog.blog.service.UserService;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Controller;
@@ -14,6 +15,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 
@@ -36,12 +38,12 @@ public class UserController {
         User user = userService.findUserByToken(token);
         userService.activateNewUser(token);
         model.addAttribute("user", user);
-        return "regitrationConfirm";
+        return "/confirmationTemplates/regitrationConfirm";
     }
 
     @GetMapping("/regitrationConfirm")
     public String registrationSuccess() {
-        return "regitrationConfirm";
+        return "/confirmationTemplates/regitrationConfirm";
     }
 
 
@@ -95,7 +97,6 @@ public class UserController {
         userService.updateLoginDate(loginDto.getEmail());
         User user = userService.findByEmail(loginDto.getEmail());
 
-
         userService.deactivateUser(user.getLoginDate());
 
 
@@ -107,6 +108,21 @@ public class UserController {
         } else
 
             return "welcome";
+    }
+
+    @PostMapping("/activation")
+    public String activateOldDeactivatedUser(@Valid LoginDto loginDto){
+        int tokenLength = 50;
+        String token = RandomStringUtils.randomAlphanumeric(tokenLength);
+        userService.activateReturnedUser(token,loginDto.getEmail());
+
+
+        return "/confirmationTemplates/activationConfirm";
+    }
+
+    @GetMapping("/activationConfirm")
+    public String activationConfirm(){
+        return "/confirmationTemplates/activationConfirm";
     }
 
 
